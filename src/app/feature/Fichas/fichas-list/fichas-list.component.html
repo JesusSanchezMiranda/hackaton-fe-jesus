@@ -1,0 +1,95 @@
+<div class="contenedor">
+  <h2>Listado de Fichas</h2>
+
+  <div class="filtros">
+
+      <div class="filtro_busqueda">
+          <input type="text" [(ngModel)]="filtroTexto" placeholder="Buscar por tema o autor" />
+        </div>
+          
+          <div class="filtrosSelect">
+              <label>
+                  Fecha agregada:
+                  <input type="date" [(ngModel)]="filtroFecha" />
+                </label>
+
+                
+                <label>
+                    Tipo de ficha:
+                    <select [(ngModel)]="filtroTipo">
+                        <option value="todos">Todos</option>
+                        <option value="libro">Libro</option>
+                        <option value="artículo">Artículo</option>
+                        <option value="tesis">Tesis</option>
+                        <option value="video">Video</option>
+                        <option value="periódico">Periódico</option>
+                        <option value="repositorio">Repositorio</option>
+                    </select>
+                </label>
+                
+                <label>
+                    Estado:
+                    <select [(ngModel)]="filtroEstado">
+                        <option value="todos">Todos</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                    </select>
+                </label>
+            </div>
+    </div>
+
+  <table class="tabla">
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Autor o Autores</th>
+        <th>Año</th>
+        <th>Tema</th>
+        <th>Tipo</th>
+
+        
+        <th *ngIf="requiereDetalle()">Editorial</th>
+        <th *ngIf="requiereDetalle()">Edición</th>
+        <th *ngIf="requiereDetalle()">Páginas</th>
+
+        <th>Fecha Agregada</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let ficha of aplicarFiltro()">
+        <td>{{ ficha.titulo }}</td>
+        <td>{{ ficha.autor }}</td>
+        <td>{{ ficha.anio_publicacion }}</td>
+        <td>{{ ficha.tema }}</td>
+        <td>{{ ficha.tipo_ficha }}</td>
+
+        <td *ngIf="requiereDetalle()">{{ ficha.editorial }}</td>
+        <td *ngIf="requiereDetalle()">{{ ficha.numero_edicion }}</td>
+        <td *ngIf="requiereDetalle()">{{ ficha.numero_paginas }}</td>
+
+        <td>{{ ficha.fecha_agregada }}</td>
+        <td>
+          <span [class.activo]="ficha.estado" [class.inactivo]="!ficha.estado">
+            {{ ficha.estado ? 'Activo' : 'Inactivo' }}
+          </span>
+        </td>
+        <td>
+          <button (click)="editarFicha(ficha.id)" class="btn-icon">
+            <i class="ri-file-edit-line"></i>
+          </button>
+
+          <button *ngIf="ficha.estado" (click)="eliminarFicha(ficha)" class="btn-icon btn-rojo" title="Desactivar">
+            <i class="ri-delete-bin-6-line"></i>
+          </button>
+
+          <button *ngIf="!ficha.estado" (click)="restaurarFicha(ficha)" class="btn-icon btn-verde" title="Restaurar">
+            <i class="ri-refresh-line"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
