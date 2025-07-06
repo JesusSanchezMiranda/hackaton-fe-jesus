@@ -41,4 +41,9 @@ export class FichasService {
   restore(id: number): Observable<void> {
     return this.http.put<void>(`${this.urlBackEnd}/restore/${id}`, {});
   }
+
+  reportPdf() {
+    return this.http.get(`${this.urlBackEnd}/pdf`, { responseType: 'blob' });
+  }
+
 }

@@ -1,0 +1,134 @@
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 900px;
+  margin: auto;
+
+  .encabezado_form{
+    border-radius: 10px;
+  background-color: #226ace;
+}
+
+  .form-header {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: white;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .fila {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    .campo {
+      flex: 1 1 48%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+
+      label {
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+      }
+
+      input, select {
+        padding: 0.6rem;
+        border-radius: 6px;
+        border: 2px solid #ccc;
+        outline: none;
+        transition: border-color 0.3s, background-color 0.3s;
+      }
+
+      input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
+        border-color: #e53935;
+        background-color: #ffebee;
+      }
+
+      input.ng-valid.ng-touched, select.ng-valid.ng-touched {
+        border-color: #43a047;
+        background-color: #e8f5e9;
+      }
+
+      small.error {
+        color: #e53935;
+        font-size: 0.8rem;
+        margin-top: 0.2rem;
+      }
+    }
+  }
+
+  .botones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      background-color: #1976d2;
+      color: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #1565c0;
+      }
+
+      &:last-child {
+        background-color: #ccc;
+        color: #333;
+
+        &:hover {
+          background-color: #bbb;
+        }
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+
+
+
+:host {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.formulario {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+}
+
+.cerrar {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+

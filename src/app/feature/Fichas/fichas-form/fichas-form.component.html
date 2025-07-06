@@ -1,1 +1,80 @@
-<p>fichas-form works!</p>
+<form [formGroup]="formFicha" (ngSubmit)="guardarFicha()" class="formulario">
+    <div class="encabezado_form">
+        <h2 class="form-header">Rellene los datos para generar una nueva ficha</h2>
+    </div>
+        
+  <div class="fila">
+    <div class="campo">
+      <label>Tipo de ficha:</label>
+      <select formControlName="tipo_ficha" [ngClass]="controlClass('tipo_ficha')">
+        <option value="" disabled selected>Selecciona una opción</option>
+        <option value="libro">Libro</option>
+        <option value="artículo">Artículo</option>
+        <option value="tesis">Tesis</option>
+        <option value="video">Video</option>
+        <option value="periódico">Periódico</option>
+        <option value="repositorio">Repositorio</option>
+      </select>
+      <small class="error" *ngIf="showError('tipo_ficha')">El tipo de ficha es obligatorio.</small>
+    </div>
+
+    <div class="campo">
+      <label>Autor:</label>
+      <input type="text" formControlName="autor" [ngClass]="controlClass('autor')" />
+      <small class="error" *ngIf="showError('autor')">El autor es obligatorio.</small>
+    </div>
+  </div>
+
+  <div class="fila">
+    <div class="campo">
+      <label>Título:</label>
+      <input type="text" formControlName="titulo" [ngClass]="controlClass('titulo')" />
+      <small class="error" *ngIf="showError('titulo')">El título es obligatorio.</small>
+    </div>
+
+    <div class="campo">
+      <label>Año de publicación:</label>
+      <input type="date" formControlName="anio_publicacion" [ngClass]="controlClass('anio_publicacion')" />
+      <small class="error" *ngIf="showError('anio_publicacion')">El año de publicación es obligatorio.</small>
+    </div>
+  </div>
+
+  <div class="fila">
+    <div class="campo">
+      <label>Tema:</label>
+      <input type="text" formControlName="tema" [ngClass]="controlClass('tema')" />
+      <small class="error" *ngIf="showError('tema')">El tema es obligatorio.</small>
+    </div>
+  </div>
+
+  <ng-container *ngIf="requiereDetalles()">
+    <div class="fila">
+      <div class="campo">
+        <label>Editorial:</label>
+        <input type="text" formControlName="editorial" [ngClass]="controlClass('editorial')" />
+        <small class="error" *ngIf="showError('editorial')">Campo obligatorio.</small>
+      </div>
+
+      <div class="campo">
+        <label>Número de Edición</label>
+        <input type="number" formControlName="numero_edicion" min="1" [ngClass]="controlClass('numero_edicion')" />
+        <small class="error" *ngIf="showError('numero_edicion')">Campo obligatorio para este tipo de ficha.</small>
+        <small class="error" *ngIf="formFicha.get('numero_edicion')?.hasError('min')">Debe ser mayor que 0</small>
+      </div>
+    </div>
+
+    <div class="fila">
+      <div class="campo">
+        <label>Número de Páginas</label>
+        <input type="number" formControlName="numero_paginas" min="1" [ngClass]="controlClass('numero_paginas')" />
+        <small class="error" *ngIf="showError('numero_edicion')">Campo obligatorio para este tipo de ficha.</small>
+        <small class="error" *ngIf="formFicha.get('numero_paginas')?.hasError('min')">Debe ser mayor que 0</small>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="botones">
+    <button type="submit" [disabled]="formFicha.invalid">{{ isEditMode ? 'Actualizar' : 'Guardar' }}</button>
+    <button type="button" (click)="cancelar()">Cancelar</button>
+  </div>
+</form>

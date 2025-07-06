@@ -1,42 +1,55 @@
 <div class="contenedor">
-  <h2>Listado de Fichas</h2>
+  <div class="encabezado-lista">
+    <h2>Listado de fichas</h2>
+    <div class="accion_botones">
+      <button (click)="reportPdf()" class="btn_reporte"> <i class="ri-file-pdf-line"></i> Reporte</button>
+      <button (click)="abrirModal()" class="btn-azul">
+        <i class="ri-draft-line"></i> Nueva ficha
+      </button>
+    </div>
+  </div>
+
 
   <div class="filtros">
 
-      <div class="filtro_busqueda">
-          <input type="text" [(ngModel)]="filtroTexto" placeholder="Buscar por tema o autor" />
-        </div>
-          
-          <div class="filtrosSelect">
-              <label>
-                  Fecha agregada:
-                  <input type="date" [(ngModel)]="filtroFecha" />
-                </label>
-
-                
-                <label>
-                    Tipo de ficha:
-                    <select [(ngModel)]="filtroTipo">
-                        <option value="todos">Todos</option>
-                        <option value="libro">Libro</option>
-                        <option value="artículo">Artículo</option>
-                        <option value="tesis">Tesis</option>
-                        <option value="video">Video</option>
-                        <option value="periódico">Periódico</option>
-                        <option value="repositorio">Repositorio</option>
-                    </select>
-                </label>
-                
-                <label>
-                    Estado:
-                    <select [(ngModel)]="filtroEstado">
-                        <option value="todos">Todos</option>
-                        <option value="activo">Activo</option>
-                        <option value="inactivo">Inactivo</option>
-                    </select>
-                </label>
-            </div>
+    <div class="filtro_busqueda">
+      <input type="text" [(ngModel)]="filtroTexto" placeholder="Buscar por tema o autor" />
     </div>
+
+    <div class="filtrosSelect">
+      <label class="filtro-fecha-label">
+        Fecha agregada:
+        <div class="filtro-fecha-wrapper">
+          <input type="date" [(ngModel)]="filtroFecha" />
+          <button type="button" (click)="filtroFecha = ''" class="btn-limpiar">Limpiar</button>
+        </div>
+      </label>
+
+
+
+      <label>
+        Tipo de ficha:
+        <select [(ngModel)]="filtroTipo">
+          <option value="todos">Todos</option>
+          <option value="libro">Libro</option>
+          <option value="artículo">Artículo</option>
+          <option value="tesis">Tesis</option>
+          <option value="video">Video</option>
+          <option value="periódico">Periódico</option>
+          <option value="repositorio">Repositorio</option>
+        </select>
+      </label>
+
+      <label>
+        Estado:
+        <select [(ngModel)]="filtroEstado">
+          <option value="todos">Todos</option>
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select>
+      </label>
+    </div>
+  </div>
 
   <table class="tabla">
     <thead>
@@ -47,7 +60,7 @@
         <th>Tema</th>
         <th>Tipo</th>
 
-        
+
         <th *ngIf="requiereDetalle()">Editorial</th>
         <th *ngIf="requiereDetalle()">Edición</th>
         <th *ngIf="requiereDetalle()">Páginas</th>
@@ -60,24 +73,42 @@
 
     <tbody>
       <tr *ngFor="let ficha of aplicarFiltro()">
-        <td>{{ ficha.titulo }}</td>
-        <td>{{ ficha.autor }}</td>
-        <td>{{ ficha.anio_publicacion }}</td>
-        <td>{{ ficha.tema }}</td>
-        <td>{{ ficha.tipo_ficha }}</td>
+        <td><i class="ri-book-2-line"></i> {{ ficha.titulo }}</td>
+        <td><i class="ri-group-fill"></i> {{ ficha.autor }}</td>
+        <td class="año"><i class="ri-calendar-event-line"></i> {{ ficha.anio_publicacion | date: 'dd-MMM-yyyy' }}</td>
+        <td><i class="ri-file-paper-2-line"></i> {{ ficha.tema }}</td>
+        <td><span class="tipo-ficha" [ngClass]="ficha.tipo_ficha">{{ ficha.tipo_ficha }}</span></td>
 
-        <td *ngIf="requiereDetalle()">{{ ficha.editorial }}</td>
-        <td *ngIf="requiereDetalle()">{{ ficha.numero_edicion }}</td>
-        <td *ngIf="requiereDetalle()">{{ ficha.numero_paginas }}</td>
+        <td>
+          <ng-container *ngIf="ficha.editorial; else sinDato">
+            <i class="ri-building-2-line"></i> {{ ficha.editorial }}
+          </ng-container>
+          <ng-template #sinDato>-</ng-template>
+        </td>
 
-        <td>{{ ficha.fecha_agregada }}</td>
+        <td>
+          <ng-container *ngIf="ficha.numero_edicion; else sinEdicion">
+            <i class="ri-edit-line"></i> {{ ficha.numero_edicion }}
+          </ng-container>
+          <ng-template #sinEdicion>-</ng-template>
+        </td>
+
+        <td>
+          <ng-container *ngIf="ficha.numero_paginas; else sinPaginas">
+            <i class="ri-pages-line"></i> {{ ficha.numero_paginas }}
+          </ng-container>
+          <ng-template #sinPaginas>-</ng-template>
+        </td>
+
+
+        <td class="año"><i class="ri-calendar-event-line"></i> {{ ficha.fecha_agregada | date: 'dd-MMM-yyyy' }}</td>
         <td>
           <span [class.activo]="ficha.estado" [class.inactivo]="!ficha.estado">
             {{ ficha.estado ? 'Activo' : 'Inactivo' }}
           </span>
         </td>
         <td>
-          <button (click)="editarFicha(ficha.id)" class="btn-icon">
+          <button (click)="editarFicha(ficha)" class="btn-icon">
             <i class="ri-file-edit-line"></i>
           </button>
 
@@ -93,3 +124,6 @@
     </tbody>
   </table>
 </div>
+
+<app-fichas-form *ngIf="modalVisible" [ficha]="fichaSeleccionada" (cerrar)="cerrarModal()"
+  (fichaGuardada)="actualizarTabla($event)" (recargar)="onFichaGuardada()" />
