@@ -4,6 +4,7 @@ import { FichasService } from '../../../core/service/fichas.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Fichas } from '../../../core/interface/fichas';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-fichas-form',
@@ -89,27 +90,37 @@ export class FichasFormComponent implements OnInit, OnChanges {
   }
 
 
-  guardarFicha(): void {
-    if (this.formFicha.invalid) return;
+ guardarFicha(): void {
+  if (this.formFicha.invalid) return;
 
-    const ficha = { ...this.formFicha.value };
+  const ficha = { ...this.formFicha.value };
 
-    if (!this.requiereDetalles()) {
-      ficha.editorial = null;
-      ficha.numero_edicion = null;
-      ficha.numero_paginas = null;
-    }
+  // Limpieza si no requiere detalles
+  if (!this.requiereDetalles()) {
+    ficha.editorial = null;
+    ficha.numero_edicion = null;
+    ficha.numero_paginas = null;
+  }
 
-    const peticion = this.isEditMode
-      ? this.fichaService.update(ficha)
-      : this.fichaService.save(ficha);
+  const peticion = this.isEditMode
+    ? this.fichaService.update(ficha)
+    : this.fichaService.save(ficha);
 
-    peticion.subscribe(() => {
-      this.recargar.emit(); // notifica al padre que actualice la lista
-      this.cerrar.emit();   // cierra el modal
+  peticion.subscribe(() => {
+    Swal.fire({
+      icon: 'success',
+      title: this.isEditMode ? 'Ficha actualizada' : 'Ficha registrada',
+      text: 'La ficha se ha guardado correctamente.',
+      confirmButtonText: 'Aceptar',
+      timer: 2000,
+      timerProgressBar: true
     });
 
-  }
+    this.recargar.emit(); // notifica al padre que actualice la lista
+    this.cerrar.emit();   // cierra el modal
+  });
+}
+
 
   cerrarModal(): void {
     this.cerrar.emit();
